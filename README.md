@@ -29,6 +29,7 @@ edit the Weather header to instrument your app keys and id codes.
 The use of individual weather providers require registration of authentication keys.
 
 See
+
     Yahoo!					https://developer.yahoo.com/weather/ (currently NYI, public api used)
 	Open Weather Map		http://openweathermap.org/api
 	Weather Underground		https://www.wunderground.com/
@@ -62,7 +63,7 @@ Read URL into a string - synchronous currently
 
 
 NSDictionary
-——————————————
+--------------------------
 
 - (NSURL *)weatherURLBy:(WeatherProvider_t)provider
 
