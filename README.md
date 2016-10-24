@@ -15,8 +15,8 @@ The caller passes in a dictionary containing a few args such as
 	owmid		open weather map location id
 
 which are used in the formation of a weather URL which is read, parsed
-and returnd as a dictionary.  The caller in addition to the location
-dictionary, passes in the provider type - see Weather header for the
+and returned as a dictionary.  The caller in addition to the location
+dictionary, passes in the provider type - see Weather public header for the
 dictionary model returned.
 
 
