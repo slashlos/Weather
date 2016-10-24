@@ -3,7 +3,7 @@
 //  Weather
 //
 //  Created by Carlos Santiago on 10/22/16.
-//  Copyright 2016 slashlos. All rights reserved.
+//  Copyright © 2016 Carlos D. Santiago. All rights reserved.
 //
 //	Split from Extras.h
 //
