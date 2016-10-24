@@ -3,7 +3,7 @@
 //  Horse
 //
 //  Created by Carlos Santiago on 8/28/16.
-//  Copyright 2016 slashlos. All rights reserved.
+//  Copyright © 2016 Carlos D. Santiago. All rights reserved.
 //
 //	Split from Extras.m
 
