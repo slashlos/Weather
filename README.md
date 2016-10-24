@@ -23,10 +23,12 @@ dictionary model returned.
 Setup
 -------
 
-To use the Weather in an app, just drag the class files into your project and 
-edit the Weather header to instrument your app keys and id codes.
+To use the Weather in an app,
 
-The use of individual weather providers require registration of authentication keys.
+    1. drag the Weather project into your project 
+    2. edit the Weather-Private header with your app keys and id codes
+
+Note that the use of individual weather providers require registration of authentication keys.
 
 See
 
@@ -41,7 +43,7 @@ In all cases, weather results are unified into a consistent weather results when
 ARC Compatibility
 ------------------
 
-As of version 0.1, Weather is non-ARC.
+As of version 0.2, Weather is ARC compliant.
 
 
 Weather Category Methods
@@ -105,7 +107,7 @@ Weather makes use of the XMLDictionary Framework package found also on github:
 Release Notes
 ----------------
 
-Version 0.1
+Version 0.2
 
 - Initial release
 

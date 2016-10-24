@@ -1,5 +1,5 @@
 Weather
-version 0.1, October 15, 2016
+version 0.2, October 24, 2016
 
 Copyright (C) 2011 Carlos David Manual Santiago
 
