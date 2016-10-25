@@ -1,6 +1,6 @@
 //
 //  Weather.m
-//  Horse
+//  Weather
 //
 //  Created by Carlos Santiago on 8/28/16.
 //  Copyright © 2016 Carlos D. Santiago. All rights reserved.
@@ -43,7 +43,7 @@ NSInteger RunAlertPanel(
 #endif
 }
 
-@implementation NSDateFormatter (Extras)
+@implementation NSDateFormatter (Weather)
 + (id)withFormat:(NSString *)format timeZone:(NSTimeZone *)timeZone
 {
 	NSDateFormatter * dateFormat = [[NSDateFormatter alloc] init];
@@ -59,6 +59,8 @@ NSInteger RunAlertPanel(
 @implementation NSString (Weather)
 - (NSString *)URLEncodedString
 {
+	//	http://stackoverflow.com/questions/5839877/nsurl-urlwithstringmystring-returns-nil/5839925#5839925
+
 	NSMutableString * tempStr = [NSMutableString stringWithString:self];
 	NSCharacterSet * cs = [NSCharacterSet URLHostAllowedCharacterSet];
 
@@ -154,14 +156,29 @@ NSInteger RunAlertPanel(
 
 	switch (provider)
 	{
+		case kWeatherByForecast_gov:
+			urlString = @"http://forecast.weather.gov/MapClick.php?%@";
+			address = [NSString stringWithFormat:urlString, locationArgs];
+			break;
+
+		case kWeatherByIntellicast:
+			urlString = @"http://www.intellicast.com/Local/Weather.aspx?location=%@";
+			address = [NSString stringWithFormat:urlString, locationArgs];
+			break;
+
+		case kWeatherByWeather_com:
+			urlString = @"https://weather.com/weather/today/l/%@";
+			address = [NSString stringWithFormat:urlString, locationArgs];
+			break;
+
 		case kWeatherByWeatherUnderground:	// Weather Underground
 			urlString = @"http://api.wunderground.com/api/%@/conditions/q%@";
-			address = [NSString stringWithFormat:urlString, wuAppKey, locationArgs];
+			address = [NSString stringWithFormat:urlString, wuHRSKey, locationArgs];
 			break;
 
 		case kWeatherByOpenWeatherMap:	// Open Weather Map
 			urlString = @"http://api.openweathermap.org/data/2.5/weather?%@&appid=%@&mode=xml&units=imperial";
-			address = [NSString stringWithFormat:urlString, [locationArgs URLEncodedString], owmAppKey];
+			address = [NSString stringWithFormat:urlString, [locationArgs URLEncodedString], owmHRSKey];
 			break;
 
 		case kWeatherByYahoo:	// Yahoo weather
@@ -180,6 +197,10 @@ NSInteger RunAlertPanel(
 
 		default:
 			NSLog(@"Unknown weather provider(%d), using simulation", provider);
+
+		case kWeatherBySimulation:
+			urlString = @"https://weather.com/weather/today/l/%@";
+			address = [NSString stringWithFormat:urlString, locationArgs];
 	}
 
 	return [NSURL URLWithString:address];
@@ -192,6 +213,10 @@ NSInteger RunAlertPanel(
 	//	provide query args by provider drawing on location dictionary
 	switch (provider)
 	{
+		case kWeatherByForecast_gov:
+			[locationArgs appendFormat:@"lat=%@&lon=%@", self[@"lat"], self[@"lon"]];
+			break;
+
 		case kWeatherByWeatherUnderground:
 
 			[locationArgs appendFormat:@"/%@/%@%@", self[@"st"], self[@"city"], @".xml"];
@@ -213,29 +238,25 @@ NSInteger RunAlertPanel(
 				{
 					[locationArgs appendFormat:@",%@", self[@"cc"]];
 				}
+				break;
 			}
-			
+
 			if (self[@"lat"] && self[@"lon"])
 			{
 				[locationArgs appendFormat:@"lat=%@&lon=%@", self[@"lat"], self[@"lon"]];
 				break;
 			}
 
-			if (self[@"zip"])
+			if (self[@"zip"] && self[@"cc"])
 			{
-				[locationArgs appendFormat:@"zip=%@", self[@"zip"]];
-				if (self[@"cc"])
-				{
-					[locationArgs appendFormat:@",%@", self[@"cc"]];
-				}
+				[locationArgs appendFormat:@"zip=%@,%@", self[@"zip"], self[@"cc"]];
 				break;
 			}
 
-			//	We don't have a location id, do table lookup
-			if (self[@"city"])
+			//	We don't have a location id, do city,cc lookup
+			if (self[@"city"] && self[@"cc"])
 			{
-				[locationArgs appendFormat:@"q=\"%@,%@\"", self[@"city"],
-				 ([@"us" isEqualToString:self[@"cc"]] ? self[@"st"] : self[@"cc"])];
+				[locationArgs appendFormat:@"q=\"%@,%@\"", self[@"city"], self[@"cc"]];
 				break;
 			}
 			break;
@@ -245,11 +266,51 @@ NSInteger RunAlertPanel(
 			 ([self[@"cc"] isEqualToString:@"us"] ? self[@"st"] : self[@"cc"])];
 			break;
 
+		default:
+			NSLog(@"Unknown weather provider(%d), using Weather.com", provider);
+
+		case kWeatherByIntellicast:
+		case kWeatherByWeather_com:
+
 		case kWeatherBySimulation:
-			;
-	}
+			[locationArgs appendString:self[@"loc"]];
 
 	return locationArgs;
+}
+
+- (void)saveLocationOfCity:(NSMutableDictionary *)city
+{
+	CLGeocoder * geocoder = [[[CLGeocoder alloc] init] autorelease];
+	CLLocationDegrees lat = [self[@"coord"][@"lat"] doubleValue];
+	CLLocationDegrees lon = [self[@"coord"][@"lon"] doubleValue];
+	CLLocation * location = [[[CLLocation alloc] initWithLatitude:lat longitude:lon] autorelease];
+
+	__block NSMutableDictionary * weakCity = city;
+
+	[geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error)
+	 {
+		 //	We already match on city name so filter using state and country code
+		 if (placemarks.count > 1)
+		 {
+			 NSPredicate * predicate = [NSPredicate predicateWithFormat:
+										@"(administrativeArea like[c] %@) and (ISOcountryCode =[c] %@)",
+										weakCity[@"st"], weakCity[@"cc"]];
+
+			 //	When we find a unique city and state and still need lat,log, save it
+			 placemarks = [placemarks filteredArrayUsingPredicate:predicate];
+		 }
+
+		 //	So save the city coord matching on state and country code
+		 for (CLPlacemark * placemark in placemarks)
+		 {
+			 if (!weakCity[@"lat"] && !weakCity[@"lon"])
+			 {
+				 // We mamtch on city and state, so capture its coordinates
+				 weakCity[@"lat"] = @(placemark.location.coordinate.latitude);
+				 weakCity[@"lon"] = @(placemark.location.coordinate.longitude);
+			 }
+		 }
+	 }];
 }
 
 #pragma mark Weather Providers
