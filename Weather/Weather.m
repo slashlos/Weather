@@ -173,12 +173,12 @@ NSInteger RunAlertPanel(
 
 		case kWeatherByWeatherUnderground:	// Weather Underground
 			urlString = @"http://api.wunderground.com/api/%@/conditions/q%@";
-			address = [NSString stringWithFormat:urlString, wuHRSKey, locationArgs];
+			address = [NSString stringWithFormat:urlString, wuAppKey, locationArgs];
 			break;
 
 		case kWeatherByOpenWeatherMap:	// Open Weather Map
 			urlString = @"http://api.openweathermap.org/data/2.5/weather?%@&appid=%@&mode=xml&units=imperial";
-			address = [NSString stringWithFormat:urlString, [locationArgs URLEncodedString], owmHRSKey];
+			address = [NSString stringWithFormat:urlString, [locationArgs URLEncodedString], owmAppKey];
 			break;
 
 		case kWeatherByYahoo:	// Yahoo weather
@@ -274,16 +274,17 @@ NSInteger RunAlertPanel(
 
 		case kWeatherBySimulation:
 			[locationArgs appendString:self[@"loc"]];
+	}
 
 	return locationArgs;
 }
 
 - (void)saveLocationOfCity:(NSMutableDictionary *)city
 {
-	CLGeocoder * geocoder = [[[CLGeocoder alloc] init] autorelease];
+	CLGeocoder * geocoder = [[CLGeocoder alloc] init];
 	CLLocationDegrees lat = [self[@"coord"][@"lat"] doubleValue];
 	CLLocationDegrees lon = [self[@"coord"][@"lon"] doubleValue];
-	CLLocation * location = [[[CLLocation alloc] initWithLatitude:lat longitude:lon] autorelease];
+	CLLocation * location = [[CLLocation alloc] initWithLatitude:lat longitude:lon];
 
 	__block NSMutableDictionary * weakCity = city;
 
