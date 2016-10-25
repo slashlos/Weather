@@ -18,6 +18,5 @@ FOUNDATION_EXPORT const unsigned char WeatherVersionString[];
 // Public header - shared
 #import <Weather/Weather-Public.h>
 
-// In this header, you should import all the public headers of your framework using statements like
+// Private header - personal keys
 #import <Weather/Weather-Private.h>
-
