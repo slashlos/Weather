@@ -26,7 +26,7 @@ Setup
 To use the Weather in an app,
 
     1. drag the Weather project into your project 
-    2. edit the Weather-Private header with your app keys and id codes
+    2. supersede weather keys defined in Weather-Private with your own
 
 Note that the use of individual weather providers require registration of authentication keys.
 
