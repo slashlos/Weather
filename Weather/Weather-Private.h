@@ -10,12 +10,24 @@
 //	Contains confidential usert tags
 
 //	Yahoo YDL API Keys - public api currentlty used
-static const NSString *ydnDefaultKey = @"your-Yahoo!-default key";// currently NYI
-static const NSString *ydnSecretKey = @"your-Yahoo!-developer-id";// currently NYI
+#ifndef ydnDefaultKey
+#define	ydnDefaultKey	(@"your-Yahoo!-default key")	// currently NYI
+#endif
+
+#ifdef	ydnSecretKey
+#define	ydnSecretKey	(@"your-Yahoo!-developer-id")	// currently NYI
+#endif
 
 //	Open Weather Map API Key
-static const NSString *owmDefaultKey = @"your-open-weather-map-api-key";
-static const NSString *owmAppKey = @"your-open-weather-map-applic-key";
+#ifndef	owmDefaultKey
+#define	owmDefaultKey	(@"open-weather-map-api-key")
+#endif
+
+#ifndef	owmAppKey
+#define	owmAppKey		(@"your-open-weather-map-applic-key")
+#endif
 
 //	Wunderground API key
-static const NSString *wuAppKey = @"your-weather-underground-api-key";
+#ifndef	wuAppKey
+#define	wuAppKey		(@"your-weather-underground-api-key")
+#endif
