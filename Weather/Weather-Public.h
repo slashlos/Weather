@@ -38,6 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
+#import <XMLDictionary/XMLDictionary.h>
+#import <CoreLocation/CoreLocation.h>
 
 //	Fetch globals from preferences
 #ifndef	GBLBIN
