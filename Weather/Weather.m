@@ -172,11 +172,14 @@ NSInteger RunAlertPanel(
 			break;
 
 		case kWeatherByWeatherUnderground:	// Weather Underground
+			if (!wuAppKey) wuAppKey = GBLSTR(@"wuAppKey");
 			urlString = @"http://api.wunderground.com/api/%@/conditions/q%@";
 			address = [NSString stringWithFormat:urlString, wuAppKey, locationArgs];
 			break;
 
 		case kWeatherByOpenWeatherMap:	// Open Weather Map
+			if (!owmDefKey) owmDefKey = GBLSTR(@"owmDefKey");
+			if (!owmAppKey) owmAppKey = GBLSTR(@"owmAppKey");
 			urlString = @"http://api.openweathermap.org/data/2.5/weather?%@&appid=%@&mode=xml&units=imperial";
 			address = [NSString stringWithFormat:urlString, [locationArgs URLEncodedString], owmAppKey];
 			break;
@@ -184,7 +187,10 @@ NSInteger RunAlertPanel(
 		case kWeatherByYahoo:	// Yahoo weather
 		{
 			NSString * yql = @"select * from weather.forecast where woeid in (select woeid from geo.places(1) where ";
-
+//	 NYI
+//	 NYI	if (!ydnDefKey) ydnDefKey = GBLSTR(@"ydnDefKey");	// your Yahoo! default api key - currently NYI
+//	 NYI	if (!ydnAppKey) ydnAppKey = GBLSTR(@"ydnAppKey");	// your Yahoo! application key - currently NYI
+//	 NYI
 			//	Use the public API leaving OAuth for another day ...
 			urlString = @"https://query.yahooapis.com/v1/public/yql?q=%@%@)%@";
 
@@ -683,9 +689,7 @@ NSInteger RunAlertPanel(
 	return dict;
 }
 
-#pragma mark Track Weather
-
-- (id)weatherForBy:(WeatherProvider_t)provider
+- (id)weatherBy:(WeatherProvider_t)provider
 {
 	//	Formulate location based on track information availalble - by preference
 	//

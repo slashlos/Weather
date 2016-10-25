@@ -46,6 +46,11 @@
 #define	GBLBIN(x)	[[NSUserDefaults standardUserDefaults] boolForKey:(x)]
 #endif
 
+#ifndef GBLSTR
+#define	GBLSTR(x)	[[NSUserDefaults standardUserDefaults] stringForKey:(x)]
+#define	SETSTR(x,v)	[[NSUserDefaults standardUserDefaults] setObject:(v) forKey:(x)]
+#endif
+
 #ifndef Random
 #define	Random(n)		((n) ? (ABS(random()) % (n)) : 0)
 #endif
@@ -86,6 +91,6 @@ NSInteger RunAlertPanel(NSString * title,
 + (id)weatherByOpenWeatherMap:(NSURL *)address;
 + (id)weatherByWeatherUnderground:(NSURL *)address;
 
-- (id)weatherForBy:(WeatherProvider_t)provider;
+- (id)weatherBy:(WeatherProvider_t)provider;
 + (id)weatherBySimulation;
 @end
