@@ -26,7 +26,18 @@ Setup
 To use the Weather in an app,
 
     1. drag the Weather project into your project 
-    2. supersede weather keys defined in Weather-Private with your own
+    2. supersede weather keys defined in Weather-Private with your own such as in your  applicationDidFinishLaunching: or similar method, do something like
+
+	//	Load our weather keys
+	SETSTR(@"ydnDefKey",@"your-private-key");
+	SETSTR(@"ydnAppKey",@"your-private-key");
+
+	//	Open Weather Map API Key
+	SETSTR(@"owmDefKey",@"your-private-key");
+	SETSTR(@"owmAppKey",@"your-private-key");
+
+	//	WeatherUnderground API key
+	SETSTR(@"wuAppKey",@"your-private-key");
 
 Note that the use of individual weather providers require registration of authentication keys.
 
