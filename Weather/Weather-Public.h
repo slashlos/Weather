@@ -54,7 +54,10 @@ typedef enum WeatherProvider
 	kWeatherBySimulation = 0,
 	kWeatherByYahoo,
 	kWeatherByOpenWeatherMap,
-	kWeatherByWeatherUnderground
+	kWeatherByWeatherUnderground,
+	kWeatherByWeather_com = 10,
+	kWeatherByIntellicast,
+	kWeatherByForecast_gov
 } WeatherProvider_t;
 
 NSInteger RunAlertPanel(NSString * title,
@@ -75,6 +78,7 @@ NSInteger RunAlertPanel(NSString * title,
 @interface NSDictionary (Weather)
 - (NSURL *)weatherURLBy:(WeatherProvider_t)provider;
 - (NSString *)locationArgsBy:(WeatherProvider_t)provider;
+- (void)saveLocationOfCity:(NSMutableDictionary *)city;
 
 + (id)weatherByYahoo:(NSURL *)address;
 + (id)weatherByOpenWeatherMap:(NSURL *)address;
