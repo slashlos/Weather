@@ -296,9 +296,19 @@ NSInteger RunAlertPanel(
 
 	[geocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error)
 	 {
-		 //	We already match on city name so filter using state and country code
+		 if (error)
+		 {
+			 [NSApp presentError:error];
+		 }
+		 else
+		 if (!placemarks.count)
+		 {
+			 NSLog(@"city %@ not found?", [city description]);
+		 }
+		 else
 		 if (placemarks.count > 1)
 		 {
+			 //	We already match on city name but filter using state and country code
 			 NSPredicate * predicate = [NSPredicate predicateWithFormat:
 										@"(administrativeArea like[c] %@) and (ISOcountryCode =[c] %@)",
 										weakCity[@"st"], weakCity[@"cc"]];
