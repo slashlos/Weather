@@ -73,7 +73,7 @@ NSInteger RunAlertPanel(NSString * title,
 						NSString * altButton,
 						NSString * othButton);
 
-@interface NSDateFormatter (Extras)
+@interface NSDateFormatter (Weather)
 + (id)withFormat:(NSString *)format timeZone:(NSTimeZone *)timeZone;
 @end
 
