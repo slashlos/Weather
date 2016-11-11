@@ -13,6 +13,359 @@
 	(NSCalendarUnitYear | NSCalendarUnitMonth  | NSCalendarUnitDay | \
 NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond)
 
+#define	kYahooCondSize	48
+static struct
+{
+	NSUInteger rank;
+	const char * text;
+}
+YahooCondCodes[kYahooCondSize] =
+{	// index corresponds to weather conditions.code
+	{ 10, "tornado" },
+	{ 10, "tropical storm" },
+	{ 10, "hurricane" },
+	{ 10, "severe thunderstorms" },
+	{ 10, "thunderstorms" },
+	{  9, "mixed rain and snow" },
+	{  9, "mixed rain and sleet" },
+	{  9, "mixed snow and sleet" },
+	{  9, "freezing drizzle" },
+	{  8, "drizzle" },
+	{  8, "freezing rain" },
+	{  8, "showers" },
+	{  8, "showers" },
+	{  8, "snow flurries" },
+	{  7, "light snow showers" },
+	{  7, "blowing snow" },
+	{  7, "snow" },
+	{  8, "hail" },
+	{  8, "sleet" },
+	{  6, "dust" },
+	{  6, "foggy" },
+	{  6, "haze" },
+	{  4, "smoky" },
+	{  4, "blustery" },
+	{  2, "windy" },
+	{  9, "cold" },
+	{  2, "cloudy" },
+	{  2, "mostly cloudy (night)" },
+	{  2, "mostly cloudy (day)" },
+	{  2, "partly cloudy (night)" },
+	{  2, "partly cloudy (day)" },
+	{  5, "clear (night)" },
+	{  1, "sunny" },
+	{  4, "fair (night)" },
+	{  4, "fair (day)" },
+	{  8, "mixed rain and hail" },
+	{ 10, "hot" },
+	{  9, "isolated thunderstorms" },
+	{  8, "scattered thunderstorms" },
+	{  8, "scattered thunderstorms" },
+	{  8, "scattered showers" },
+	{  9, "heavy snow" },
+	{  9, "scattered snow showers" },
+	{ 11, "heavy snow" },
+	{  4, "partly cloudy" },
+	{  6, "thundershowers" },
+	{  8, "snow showers" },
+	{  7, "isolated thundershowers" },
+
+};
+
+#define	kOpenWeatherMapCondSize	73
+static struct
+{
+	NSUInteger wthr;
+	const char * text;
+	NSUInteger rank;
+}
+OpenWeatherMapCondCodes[kOpenWeatherMapCondSize] =
+{
+// Group 2xx: Thunderstorm
+	{ 200,"thunderstorm with light rain",10, },
+	{ 201,"thunderstorm with rain",10, },
+	{ 202,"thunderstorm with heavy rain",10, },
+	{ 210,"light thunderstorm",10, },
+	{ 211,"thunderstorm",10, },
+	{ 212,"heavy thunderstorm",10, },
+	{ 221,"ragged thunderstorm",10, },
+	{ 230,"thunderstorm with light drizzle",10, },
+	{ 231,"thunderstorm with drizzle",10, },
+	{ 232,"thunderstorm with heavy drizzle",10, },
+// Group 3xx: Drizzle
+	{ 300,"light intensity drizzle",6, },
+	{ 301,"drizzle",6, },
+	{ 302,"heavy intensity drizzle",6, },
+	{ 310,"light intensity drizzle rain",6, },
+	{ 311,"drizzle rain",6, },
+	{ 312,"heavy intensity drizzle rain",6, },
+	{ 313,"shower rain and drizzle",6, },
+	{ 314,"heavy shower rain and drizzle",6, },
+	{ 321,"shower drizzle",6, },
+// Group 5xx: Rain
+	{ 500,"light rain",6, },
+	{ 501,"moderate rain",6, },
+	{ 502,"heavy intensity rain",7, },
+	{ 503,"very heavy rain",7, },
+	{ 504,"extreme rain",7, },
+	{ 511,"freezing rain",8, },
+	{ 520,"light intensity shower rain",8, },
+	{ 521,"shower rain",8, },
+	{ 522,"heavy intensity shower rain",8, },
+	{ 531,"ragged shower rain",8, },
+// Group 6xx: Snow
+	{ 600,"light snow",7, },
+	{ 601,"snow",7, },
+	{ 602,"heavy snow",7, },
+	{ 611,"sleet",7, },
+	{ 612,"shower sleet",7, },
+	{ 615,"light rain and snow",8, },
+	{ 616,"rain and snow",8, },
+	{ 620,"light shower snow",8, },
+	{ 621,"shower snow",8, },
+	{ 622,"heavy shower snow",9, },
+// Group 7xx: Atmosphere
+	{ 701,"mist",1, },
+	{ 711,"smoke",1, },
+	{ 721,"haze",1, },
+	{ 731,"sand; dust whirls",1, },
+	{ 741,"fog",1, },
+	{ 751,"sand",1, },
+	{ 761,"dust",1, },
+	{ 762,"volcanic ash",10, },
+	{ 771,"squalls",10, },
+	{ 781,"tornado",10, },
+// Group 800: Clear
+	{ 800,"clear sky",1, },
+// Group 80x: Clouds
+	{ 801,"few clouds",0, },
+	{ 802,"scattered clouds",0, },
+	{ 803,"broken clouds",0, },
+	{ 804,"overcast clouds",0, },
+// Group 90x: Extreme
+	{ 900,"tornado",10, },
+	{ 901,"tropical storm",10, },
+	{ 902,"hurricane",10, },
+	{ 903,"cold",8, },
+	{ 904,"hot",9, },
+	{ 905,"windy",9, },
+	{ 906,"hail",10, },
+// Group 9xx: Additional
+	{ 951,"calm",0, },
+	{ 952,"light breeze",1, },
+	{ 953,"gentle breeze",1, },
+	{ 954,"moderate breeze",1, },
+	{ 955,"fresh breeze",1, },
+	{ 956,"strong breeze",4, },
+	{ 957,"high wind; near gale",4, },
+	{ 958,"gale",5, },
+	{ 959,"severe gale",5, },
+	{ 960,"storm",8, },
+	{ 961,"violent storm",9, },
+	{ 962,"hurricane",10, }
+};
+
+@implementation Weather
++ (NSDictionary *)ydlcodes
+{
+	static NSDictionary * ydlcodes = nil;
+
+	if (!ydlcodes)
+	{
+		NSMutableDictionary * ydl = [NSMutableDictionary dictionary];
+
+		for (NSUInteger wthr=0; wthr<kYahooCondSize; wthr++)
+		{
+			NSString * txt = [NSString stringWithFormat:@"%s",YahooCondCodes[wthr].text];
+			NSNumber * key = @(wthr);
+
+			ydl[key] = @{ @"key"  : key,
+						  @"rank" : @(YahooCondCodes[wthr].rank),
+						  @"text" : txt
+						};
+		}
+
+		//	OEM
+		ydl[@3200] = @{ @"key"  : @3200,
+						@"rank" : @0,
+						@"text" : @"not available"
+						};
+
+		ydlcodes = ydl;
+	}
+
+	return ydlcodes;
+}
+
++ (NSDictionary *)owmcodes
+{
+	static NSDictionary * owmcodes = nil;
+
+	if (!owmcodes)
+	{
+		NSMutableDictionary * owm = [NSMutableDictionary dictionary];
+
+		for (NSUInteger owmx=0; owmx<kOpenWeatherMapCondSize; owmx++)
+		{
+			NSString * text = [NSString stringWithFormat:@"%s",OpenWeatherMapCondCodes[owmx].text];
+			NSNumber * wthr = @(OpenWeatherMapCondCodes[owmx].wthr);
+			NSNumber * rank = @(OpenWeatherMapCondCodes[owmx].rank);
+
+			owm[wthr] = @{ @"key"  : wthr,
+						   @"text" : text,
+						   @"rank" : rank
+						 };
+		}
+
+		//	OEM
+		owm[@3200] = @{ @"key"  : @3200,
+						@"text" : @"not available",
+						@"rank" : @0
+						};
+
+		owmcodes = owm;
+	}
+	return owmcodes;
+}
+
++ (NSDictionary *)wu_codes
+{
+	static NSDictionary * wu_codes = nil;
+
+	//	wu doesn't have their own but remake ydlcodes by key (text) and code (numeric)
+	if (!wu_codes)
+	{
+		NSMutableDictionary * wu = [NSMutableDictionary dictionary];
+		NSDictionary * ydl = [Weather ydlcodes];
+
+		for (NSNumber * key in ydl.allKeys)
+		{
+			NSDictionary * val = ydl[key];
+			
+			wu[key] = val;
+			wu[val[@"text"]] = val;
+		}
+		wu_codes = wu;
+
+	}
+	return wu_codes;
+}
+@end
+
+#pragma mark Weather Mapping Functions
+
+NSUInteger getWthrFromYahooCondCode( NSUInteger condCode )
+{
+	NSDictionary * ydl = [Weather ydlcodes];
+	NSNumber * code = @(condCode);
+	
+	if (!ydl[code])
+	{
+		return getWthrFromYahooCondCode(3200);
+	}
+	else
+	{
+		return [ydl[code][@"rank"] integerValue];
+	}
+}
+
+NSString * getTextFromYahooCondCode( NSUInteger condCode )
+{
+	NSDictionary * ydl = [Weather ydlcodes];
+	NSNumber * code = @(condCode);
+	
+	if (!ydl[code])
+	{
+		return getTextFromYahooCondCode(3200);
+	}
+	else
+	{
+		return ydl[code][@"text"];
+	}
+}
+
+NSUInteger getWthrFromOWMCondCode( NSUInteger condCode )
+{
+	NSDictionary * owm = [Weather owmcodes];
+	NSNumber * code = @(condCode);
+	
+	if (!owm[code])
+	{
+		return getWthrFromOWMCondCode(3200);
+	}
+	else
+	{
+		return [owm[code][@"rank"] integerValue];
+	}
+}
+
+NSString * getTextFromOWMCondCode( NSUInteger condCode )
+{
+	NSDictionary * owm = [Weather owmcodes];
+	NSNumber * code = @(condCode);
+	
+	if (!owm[code])
+	{
+		return getTextFromOWMCondCode(3200);
+	}
+	else
+	{
+		return owm[code][@"text"];
+	}
+}
+
+NSDictionary * ydlcodeForWUWeather( NSString * weather )
+{
+	NSDictionary * ydl = [Weather owmcodes];
+
+	//	Return first matching ydlcodes entry on text
+	for (NSNumber * key in ydl.allKeys)
+	{
+		if ([ydl[key][@"text"] rangeOfString:weather
+										  options:NSCaseInsensitiveSearch].location != NSNotFound)
+		{
+			NSMutableDictionary * val = [[NSMutableDictionary alloc] initWithDictionary:ydl[key]];
+
+			//	make value complete with its referencing key and return
+			val[@"key"]= key;
+			return val;
+		}
+	}
+	return nil;
+}
+
+NSUInteger getWthrFromWUCondCode( NSUInteger condCode )
+{
+	NSDictionary * wu = [Weather wu_codes];
+	NSNumber * code = @(condCode);
+	
+	if (!wu[code])
+	{
+		return getWthrFromWUCondCode(3200);
+	}
+	else
+	{
+		return [wu[code][@"rank"] integerValue];
+	}
+}
+
+NSString * getTextFromWUCondCode( NSUInteger condCode )
+{
+	NSDictionary * wu = [Weather wu_codes];
+	NSNumber * code = @(condCode);
+	
+	if (!wu[code])
+	{
+		return getTextFromWUCondCode(3200);
+	}
+	else
+	{
+		return wu[code][@"text"];
+	}
+}
+
+#pragma mark Utilities
+
 NSInteger RunAlertPanel(
 						NSString * title,
 						NSString * format,
@@ -502,21 +855,26 @@ NSInteger RunAlertPanel(
 	temp[@"visibility"] = dict[@"current_observation"][@"visibility_mi"];
 	dict[@"atmosphere"] = temp;
 
+	//	Use ydlcodes to find a matching weather code key and text
+	NSString * text = dict[@"current_observation"][@"weather"];
+	NSDictionary * ydl = ydlcodeForWUWeather(text);
+	NSNumber * code = ydl[@"key"];
+
 	temp = [NSMutableDictionary dictionary];
-///	temp[@"code"] = 30;
+	temp[@"code"] = code;
 	temp[@"date"] = dict[@"current_observation"][@"observation_time"];
 	temp[@"temp"] = dict[@"current_observation"][@"temp_f"];
-	temp[@"text"] = dict[@"current_observation"][@"weather"];
+	temp[@"text"] = text;
 	dict[@"condition"] = temp;
 
 	temp = [NSMutableDictionary dictionary];
 	temp[@"description"] = dict[@"current_observation"][@"image"][@"title"];
-///	temp[@"code"] = 30;
+	temp[@"code"] = code;
 	temp[@"date"] = sims[@"forecast"][@"date"];
 	temp[@"day"] = sims[@"forecast"][@"day"];;
 	temp[@"high"] = dict[@"current_observation"][@"windchill_f"];
 	temp[@"low"] = dict[@"current_observation"][@"windchill_f"];
-	temp[@"text"] = dict[@"current_observation"][@"weather"];
+	temp[@"text"] = text;
 	dict[@"forecast"] = temp;
 
 //	image - already set

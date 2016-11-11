@@ -67,11 +67,22 @@ typedef enum WeatherProvider
 	kWeatherByForecast_gov
 } WeatherProvider_t;
 
+NSUInteger getWthrFromYahooCondCode(NSUInteger condCode);
+NSString * getTextFromYahooCondCode( NSUInteger condCode );
+NSUInteger getWthrFromOWMCondCode(NSUInteger condCode);
+NSString * getTextFromOWMCondCode( NSUInteger condCode );
+NSDictionary * ydlcodeForWUWeather( NSString * weather );
+NSUInteger getWthrFromWUCondCode(NSUInteger condCode);
+NSString * getTextFromWUCondCode( NSUInteger condCode );
+
 NSInteger RunAlertPanel(NSString * title,
 						NSString * format,
 						NSString * defButton,
 						NSString * altButton,
 						NSString * othButton);
+
+@interface Weather : NSObject
+@end
 
 @interface NSDateFormatter (Weather)
 + (id)withFormat:(NSString *)format timeZone:(NSTimeZone *)timeZone;
