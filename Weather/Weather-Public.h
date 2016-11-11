@@ -67,13 +67,13 @@ typedef enum WeatherProvider
 	kWeatherByForecast_gov
 } WeatherProvider_t;
 
-NSUInteger getWthrFromYahooCondCode(NSUInteger condCode);
+NSUInteger getRankFromYahooCondCode( NSUInteger condCode );
 NSString * getTextFromYahooCondCode( NSUInteger condCode );
-NSUInteger getWthrFromOWMCondCode(NSUInteger condCode);
+
+NSUInteger getRankFromOWMCondCode( NSUInteger condCode );
 NSString * getTextFromOWMCondCode( NSUInteger condCode );
-NSDictionary * ydlcodeForWUWeather( NSString * weather );
-NSUInteger getWthrFromWUCondCode(NSUInteger condCode);
-NSString * getTextFromWUCondCode( NSUInteger condCode );
+
+NSDictionary * ydlModelForWeather( NSString * text );
 
 NSInteger RunAlertPanel(NSString * title,
 						NSString * format,
@@ -104,4 +104,12 @@ NSInteger RunAlertPanel(NSString * title,
 
 - (id)weatherBy:(WeatherProvider_t)provider;
 + (id)weatherBySimulation;
+@end
+
+// https://gist.githubusercontent.com/darkseed/1261842/raw/05384407c99a6981b1743053c9458977bf28d782/NSString+Soundex.h
+@interface NSString (Soundex)
+
+- (NSString*)	soundexString;
+- (BOOL)		soundsLikeString:(NSString*) aString;
+
 @end

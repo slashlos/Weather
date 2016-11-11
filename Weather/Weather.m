@@ -13,6 +13,11 @@
 	(NSCalendarUnitYear | NSCalendarUnitMonth  | NSCalendarUnitDay | \
 NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond)
 
+//	Weather model index; measure weather deterioration
+static const NSString * wCode = @"code";
+static const NSString * wRank = @"rank";
+static const NSString * wText = @"text";
+
 #define	kYahooCondSize	48
 static struct
 {
@@ -68,14 +73,13 @@ YahooCondCodes[kYahooCondSize] =
 	{  4, "partly cloudy" },
 	{  6, "thundershowers" },
 	{  8, "snow showers" },
-	{  7, "isolated thundershowers" },
-
+	{  7, "isolated thundershowers" }
 };
 
 #define	kOpenWeatherMapCondSize	73
 static struct
 {
-	NSUInteger wthr;
+	NSUInteger code;
 	const char * text;
 	NSUInteger rank;
 }
@@ -174,22 +178,20 @@ OpenWeatherMapCondCodes[kOpenWeatherMapCondSize] =
 	{
 		NSMutableDictionary * ydl = [NSMutableDictionary dictionary];
 
+		//	Mapping codes by key code and text
 		for (NSUInteger wthr=0; wthr<kYahooCondSize; wthr++)
 		{
-			NSString * txt = [NSString stringWithFormat:@"%s",YahooCondCodes[wthr].text];
-			NSNumber * key = @(wthr);
+			NSString * text = [NSString stringWithFormat:@"%s",YahooCondCodes[wthr].text];
+			NSNumber * code = @(wthr);
 
-			ydl[key] = @{ @"key"  : key,
-						  @"rank" : @(YahooCondCodes[wthr].rank),
-						  @"text" : txt
-						};
+			ydl[wCode] = @{ wRank : @(YahooCondCodes[wthr].rank),
+							wText : text
+						  };
+
+			ydl[wText] = @{ wRank : @(YahooCondCodes[wthr].rank),
+							wCode : code
+						  };
 		}
-
-		//	OEM
-		ydl[@3200] = @{ @"key"  : @3200,
-						@"rank" : @0,
-						@"text" : @"not available"
-						};
 
 		ydlcodes = ydl;
 	}
@@ -205,68 +207,36 @@ OpenWeatherMapCondCodes[kOpenWeatherMapCondSize] =
 	{
 		NSMutableDictionary * owm = [NSMutableDictionary dictionary];
 
+		//	Mapping codes by key code and text
 		for (NSUInteger owmx=0; owmx<kOpenWeatherMapCondSize; owmx++)
 		{
+			NSNumber * code = @(OpenWeatherMapCondCodes[owmx].code);
 			NSString * text = [NSString stringWithFormat:@"%s",OpenWeatherMapCondCodes[owmx].text];
-			NSNumber * wthr = @(OpenWeatherMapCondCodes[owmx].wthr);
 			NSNumber * rank = @(OpenWeatherMapCondCodes[owmx].rank);
 
-			owm[wthr] = @{ @"key"  : wthr,
-						   @"text" : text,
-						   @"rank" : rank
+			owm[wCode] = @{ wRank : rank,
+							wText : text
+						 };
+
+			owm[wText] = @{ wRank : code,
+							wText : text
 						 };
 		}
-
-		//	OEM
-		owm[@3200] = @{ @"key"  : @3200,
-						@"text" : @"not available",
-						@"rank" : @0
-						};
 
 		owmcodes = owm;
 	}
 	return owmcodes;
 }
-
-+ (NSDictionary *)wu_codes
-{
-	static NSDictionary * wu_codes = nil;
-
-	//	wu doesn't have their own but remake ydlcodes by key (text) and code (numeric)
-	if (!wu_codes)
-	{
-		NSMutableDictionary * wu = [NSMutableDictionary dictionary];
-		NSDictionary * ydl = [Weather ydlcodes];
-
-		for (NSNumber * key in ydl.allKeys)
-		{
-			NSDictionary * val = ydl[key];
-			
-			wu[key] = val;
-			wu[val[@"text"]] = val;
-		}
-		wu_codes = wu;
-
-	}
-	return wu_codes;
-}
 @end
 
 #pragma mark Weather Mapping Functions
 
-NSUInteger getWthrFromYahooCondCode( NSUInteger condCode )
+NSUInteger getRankFromYahooCondCode( NSUInteger condCode )
 {
 	NSDictionary * ydl = [Weather ydlcodes];
 	NSNumber * code = @(condCode);
 	
-	if (!ydl[code])
-	{
-		return getWthrFromYahooCondCode(3200);
-	}
-	else
-	{
-		return [ydl[code][@"rank"] integerValue];
-	}
+	return [ydl[code][wRank] integerValue];
 }
 
 NSString * getTextFromYahooCondCode( NSUInteger condCode )
@@ -274,29 +244,15 @@ NSString * getTextFromYahooCondCode( NSUInteger condCode )
 	NSDictionary * ydl = [Weather ydlcodes];
 	NSNumber * code = @(condCode);
 	
-	if (!ydl[code])
-	{
-		return getTextFromYahooCondCode(3200);
-	}
-	else
-	{
-		return ydl[code][@"text"];
-	}
+	return ydl[code][wText];
 }
 
-NSUInteger getWthrFromOWMCondCode( NSUInteger condCode )
+NSUInteger getRankFromOWMCondCode( NSUInteger condCode )
 {
 	NSDictionary * owm = [Weather owmcodes];
 	NSNumber * code = @(condCode);
 	
-	if (!owm[code])
-	{
-		return getWthrFromOWMCondCode(3200);
-	}
-	else
-	{
-		return [owm[code][@"rank"] integerValue];
-	}
+	return [owm[code][wRank] integerValue];
 }
 
 NSString * getTextFromOWMCondCode( NSUInteger condCode )
@@ -304,64 +260,43 @@ NSString * getTextFromOWMCondCode( NSUInteger condCode )
 	NSDictionary * owm = [Weather owmcodes];
 	NSNumber * code = @(condCode);
 	
-	if (!owm[code])
-	{
-		return getTextFromOWMCondCode(3200);
-	}
-	else
-	{
-		return owm[code][@"text"];
-	}
+	return owm[code][wText];
 }
 
-NSDictionary * ydlcodeForWUWeather( NSString * weather )
+NSDictionary * getModelForWeatherText( NSString * weather )
 {
-	NSDictionary * ydl = [Weather owmcodes];
+	NSDictionary * ydl = [Weather ydlcodes];
 
-	//	Return first matching ydlcodes entry on text
+	//	Return first matching entry on text; try small yahoo first
 	for (NSNumber * key in ydl.allKeys)
 	{
-		if ([ydl[key][@"text"] rangeOfString:weather
-										  options:NSCaseInsensitiveSearch].location != NSNotFound)
+//		if ([ydl[key][wText] rangeOfString:weather
+//										  options:NSCaseInsensitiveSearch].location != NSNotFound)
+		if ([ydl[key][wText] soundsLikeString:weather])
 		{
 			NSMutableDictionary * val = [[NSMutableDictionary alloc] initWithDictionary:ydl[key]];
 
-			//	make value complete with its referencing key and return
-			val[@"key"]= key;
+			//	make value complete with its referencing key code and return
+			val[wCode] = key;
 			return val;
 		}
 	}
+
+	//	Ok, open weather map next
+	for (NSNumber * key in ydl.allKeys)
+	{
+		if ([ydl[key][wText] soundsLikeString:weather])
+		{
+			NSMutableDictionary * val = [[NSMutableDictionary alloc] initWithDictionary:ydl[key]];
+			
+			//	make value complete with its referencing key code and return
+			val[wCode] = key;
+			return val;
+		}
+	}
+
+	//	Yoink
 	return nil;
-}
-
-NSUInteger getWthrFromWUCondCode( NSUInteger condCode )
-{
-	NSDictionary * wu = [Weather wu_codes];
-	NSNumber * code = @(condCode);
-	
-	if (!wu[code])
-	{
-		return getWthrFromWUCondCode(3200);
-	}
-	else
-	{
-		return [wu[code][@"rank"] integerValue];
-	}
-}
-
-NSString * getTextFromWUCondCode( NSUInteger condCode )
-{
-	NSDictionary * wu = [Weather wu_codes];
-	NSNumber * code = @(condCode);
-	
-	if (!wu[code])
-	{
-		return getTextFromWUCondCode(3200);
-	}
-	else
-	{
-		return wu[code][@"text"];
-	}
 }
 
 #pragma mark Utilities
@@ -734,6 +669,9 @@ NSInteger RunAlertPanel(
 	dict[@"units"] = json[@"query"][@"results"][@"channel"][@"units"];
 	dict[@"wind"] = json[@"query"][@"results"][@"channel"][@"wind"];
 
+	//	insert weather code to index rank mapping
+	dict[@"condition"][@"rank"] = @(getRankFromYahooCondCode([dict[@"condition"][@"code"] intValue]));
+
 	//	Add our signature
 	dict[@"provided"] = @"ByYahoo!";
 	dict[@"provider"] = @(kWeatherByYahoo);
@@ -755,49 +693,81 @@ NSInteger RunAlertPanel(
 		[dict addEntriesFromDictionary:[NSDictionary weatherBySimulation]];
 	}
 
+	//	Unify all dates to the model format from UTC format
+	NSTimeZone * utcZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+	NSDateFormatter * utc_format = [NSDateFormatter withFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'" timeZone:utcZone];
+
+	NSTimeZone * timeZone = [NSTimeZone defaultTimeZone];
+	NSDateFormatter * timeFormat =
+	[NSDateFormatter withFormat:@"h:mm a z" timeZone:timeZone];
+	NSDateFormatter * dateFormat2 =
+	[NSDateFormatter withFormat:@"EEE, d MMM YYYY h:mm a z" timeZone:timeZone];
+	NSString * dateString;
+	NSDate * date;
+
 	//	Now add translation maps, fill in missing cells from sims
 	NSDictionary * sims = [self weatherBySimulation];
 	NSMutableDictionary * temp = nil;
 
 	temp = [NSMutableDictionary dictionary];
-	temp[@"sunrise"] = dict[@"city"][@"sun"][@"_rise"];
-	temp[@"sunset"] = dict[@"city"][@"sun"][@"_set"];
+	dateString = dict[@"city"][@"sun"][@"_rise"];
+	date = [utc_format dateFromString:dateString];
+	temp[@"sunrise"] = [timeFormat stringFromDate:date];
+
+	dateString = dict[@"city"][@"sun"][@"_set"];
+	date = [utc_format dateFromString:dateString];
+	temp[@"sunset"] = [timeFormat stringFromDate:date];
 	dict[@"astronomy"] = temp;
-	
+
 	temp = [NSMutableDictionary dictionary];
 	temp[@"humidity"] = dict[@"humidity"][@"_value"];
 	temp[@"pressure"] = dict[@"pressure"][@"_value"];
+//	temp[@"rising"] = TODO: pressure
+//	temp[@"visibility"] = TODO: distance
 	dict[@"atmosphere"] = temp;
-	
+
 	temp = [NSMutableDictionary dictionary];
-	///	temp[@"code"] = 30;
-	temp[@"date"] = dict[@"lastupdate"][@"_value"];
+
+	//	Use ydlcodes to find a matching weather code key and text
+	NSString * text = dict[@"weather"][@"_value"];
+	NSDictionary * ydl = getModelForWeatherText(text);
+	NSNumber * code = dict[@"weather"][@"_number"];
+	NSNumber * rank = ydl[@"rank"];
+
+	temp[@"code"] = code;
+
+	dateString = dict[@"lastupdate"][@"_value"];
+	date = [utc_format dateFromString:dateString];
+	temp[@"date"] = [dateFormat2 stringFromDate:date];
+
 	temp[@"temp"] = dict[@"temperature"][@"_value"];
-	temp[@"text"] = dict[@"weather"][@"_value"];
+	temp[@"text"] = text;
+	temp[@"rank"] = rank;
 	dict[@"condition"] = temp;
-	
+
 	temp = [NSMutableDictionary dictionary];
 	temp[@"description"] = dict[@"weather"][@"_value"];
-	temp[@"code"] = dict[@"weather"][@"_number"];//todo map this
+	temp[@"code"] = dict[@"weather"][@"_number"];
+
 	temp[@"date"] = sims[@"forecast"][@"date"];
 	temp[@"day"] = sims[@"forecast"][@"day"];;
 	temp[@"high"] = dict[@"temperature"][@"_max"];
 	temp[@"low"] = dict[@"temperature"][@"_min"];
 	temp[@"text"] = dict[@"clouds"][@"_name"];
 	dict[@"forecast"] = temp;
-	
+
 	//	image - none
 	dict[@"item"] = dict[@"weather"][@"_value"];
 	dict[@"language"] = @"en-us";
 	dict[@"lastBuildDate"] = dict[@"lastupdate"][@"_value"];
 //	dict[@"link"] - none
-	
+
 	temp = [NSMutableDictionary dictionary];
 	temp[@"city"] = dict[@"city"][@"_name"];
 	temp[@"country"] = dict[@"city"][@"country"];
 //	temp[@"region"] - none
 	dict[@"location"] = temp;
-	
+
 	dict[@"title"] = [NSString stringWithFormat:@"Open Weather Map Weather - %@, %@",
 					  dict[@"location"][@"city"],
 					  dict[@"location"][@"country"]];
@@ -833,6 +803,16 @@ NSInteger RunAlertPanel(
 		[dict addEntriesFromDictionary:[NSDictionary weatherBySimulation]];
 	}
 
+	//	Unify all dates to the model format from UTC format
+	NSTimeZone * utcZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+	NSDateFormatter * utc_format = [NSDateFormatter withFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'" timeZone:utcZone];
+
+	NSTimeZone * timeZone = [NSTimeZone defaultTimeZone];
+	NSDateFormatter * dateFormat2 =
+	[NSDateFormatter withFormat:@"EEE, d MMM YYYY h:mm a z" timeZone:timeZone];
+	NSString * dateString;
+	NSDate * date;
+
 	//	Build our return weather dictionary
 	[dict addEntriesFromDictionary:[NSDictionary dictionaryWithXMLString:weatherString]];
 
@@ -857,14 +837,20 @@ NSInteger RunAlertPanel(
 
 	//	Use ydlcodes to find a matching weather code key and text
 	NSString * text = dict[@"current_observation"][@"weather"];
-	NSDictionary * ydl = ydlcodeForWUWeather(text);
-	NSNumber * code = ydl[@"key"];
+	NSDictionary * ydl = getModelForWeatherText(text);
+	NSNumber * code = ydl[wCode];
+	NSNumber * rank = ydl[wRank];
 
 	temp = [NSMutableDictionary dictionary];
 	temp[@"code"] = code;
-	temp[@"date"] = dict[@"current_observation"][@"observation_time"];
-	temp[@"temp"] = dict[@"current_observation"][@"temp_f"];
 	temp[@"text"] = text;
+	temp[@"rank"] = rank;
+
+	dateString = dict[@"current_observation"][@"observation_time"];
+	date = [utc_format dateFromString:dateString];
+	temp[@"date"] = [dateFormat2 stringFromDate:date];
+
+	temp[@"temp"] = dict[@"current_observation"][@"temp_f"];
 	dict[@"condition"] = temp;
 
 	temp = [NSMutableDictionary dictionary];
@@ -872,15 +858,19 @@ NSInteger RunAlertPanel(
 	temp[@"code"] = code;
 	temp[@"date"] = sims[@"forecast"][@"date"];
 	temp[@"day"] = sims[@"forecast"][@"day"];;
-	temp[@"high"] = dict[@"current_observation"][@"windchill_f"];
-	temp[@"low"] = dict[@"current_observation"][@"windchill_f"];
+	temp[@"day"][@"high"] = dict[@"current_observation"][@"windchill_f"];
+	temp[@"day"][@"low"] = dict[@"current_observation"][@"windchill_f"];
 	temp[@"text"] = text;
 	dict[@"forecast"] = temp;
 
 //	image - already set
 	dict[@"item"] = dict[@"current_observation"][@"observation_time"];
 	dict[@"language"] = @"en-us";
-	dict[@"lastBuildDate"] = dict[@"current_observation"][@"observation_time"];
+
+	dateString = dict[@"current_observation"][@"observation_time"];
+	date = [utc_format dateFromString:dateString];
+	dict[@"lastBuildDate"] = [dateFormat2 stringFromDate:date];
+
 	dict[@"link"] = dict[@"current_observation"][@"ob_url"];
 
 	temp = [NSMutableDictionary dictionary];
@@ -1022,7 +1012,7 @@ NSInteger RunAlertPanel(
 	vals = [NSMutableDictionary dictionary];
 	[dict setObject:vals forKey:@"location"];
 
-	[vals setObject:@"hedwig.local" forKey:@"city"];
+	[vals setObject:[[NSHost currentHost] localizedName] forKey:@"city"];
 	[vals setObject:@"Internet" forKey:@"country"];
 	[vals setObject:@"Americas" forKey:@"region"];
 
@@ -1038,6 +1028,7 @@ NSInteger RunAlertPanel(
 	[vals setObject:val forKey:@"date"];
 	[vals setObject:[NSString stringWithFormat:@"%ld", temp] forKey:@"temp"];
 	[vals setObject:@"Partly Cloudy" forKey:@"text"];
+	[vals setObject:@"2" forKey:@"rank"];
 
 	//
 	//	'units' values
@@ -1104,5 +1095,163 @@ NSInteger RunAlertPanel(
 	}
 
 	return nil;
+}
+@end
+
+#pragma mark -
+
+// https://gist.githubusercontent.com/darkseed/1261842/raw/05384407c99a6981b1743053c9458977bf28d782/NSString+Soundex.m
+//#import "NSString+Soundex.h"
+@implementation NSString (Soundex)
+
+static NSArray* soundexCharSets = nil;
+
+- (void)		initSoundex
+{
+	if( soundexCharSets == nil )
+	{
+		NSMutableArray* cs = [NSMutableArray array];
+		NSCharacterSet* charSet;
+		
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"aeiouhw"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"bfpv"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"cgjkqsxz"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"dt"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"l"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"mn"];
+		[cs addObject:charSet];
+		charSet = [NSCharacterSet characterSetWithCharactersInString:@"r"];
+		[cs addObject:charSet];
+
+		soundexCharSets = cs;//[cs retain];
+	}
+}
+
+
+- (NSString *)	stringByRemovingCharactersInSet:(NSCharacterSet*) charSet options:(unsigned) mask
+{
+	NSRange				range;
+	NSMutableString*	newString = [NSMutableString string];
+	NSUInteger			len = [self length];
+	
+	mask &= ~NSBackwardsSearch;
+	range = NSMakeRange (0, len);
+	while (range.length)
+	{
+		NSRange substringRange;
+		NSUInteger pos = range.location;
+		
+		range = [self rangeOfCharacterFromSet:charSet options:mask range:range];
+		if (range.location == NSNotFound)
+			range = NSMakeRange (len, 0);
+		
+		substringRange = NSMakeRange (pos, range.location - pos);
+		[newString appendString:[self substringWithRange:substringRange]];
+		
+		range.location += range.length;
+		range.length = len - range.location;
+	}
+	
+	return newString;
+}
+
+
+- (NSString *)	stringByRemovingCharactersInSet:(NSCharacterSet*) charSet
+{
+	return [self stringByRemovingCharactersInSet:charSet options:0];
+}
+
+
+- (unsigned)	soundexValueForCharacter:(unichar) aCharacter
+{
+	// returns the soundex mapping for the first character in the string. If the value returned is 0, the character should be discarded.
+	
+	unsigned		indx;
+	NSCharacterSet* cs;
+	
+	for( indx = 0; indx < [soundexCharSets count]; ++indx )
+	{
+		cs = [soundexCharSets objectAtIndex:indx];
+		
+		if([cs characterIsMember:aCharacter])
+			return indx;
+	}
+	
+	return 0;
+}
+
+
+- (NSString*)	soundexString
+{
+	// returns the Soundex representation of the string.
+	/*
+	 
+	 Replace consonants with digits as follows (but do not change the first letter):
+	 b, f, p, v => 1
+	 c, g, j, k, q, s, x, z => 2
+	 d, t => 3
+	 l => 4
+	 m, n => 5
+	 r => 6
+	 Collapse adjacent identical digits into a single digit of that value.
+	 Remove all non-digits after the first letter.
+	 Return the starting letter and the first three remaining digits. If needed, append zeroes to make it a letter and three digits.
+	 
+	 */
+	
+	[self initSoundex];
+	
+	if([self length] > 0)
+	{
+		NSMutableString* soundexStr = [NSMutableString string];
+		
+		// strip whitespace and convert to lower case
+		
+		NSString*	workingString = [[self lowercaseString] stringByRemovingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+		unsigned	indx, soundValue, previousSoundValue = 0;
+		
+		// include first character
+		
+		[soundexStr appendString:[workingString substringToIndex:1]];
+		
+		// convert up to 3 more significant characters
+		
+		for( indx = 1; indx < [workingString length]; ++indx )
+		{
+			soundValue = [self soundexValueForCharacter:[workingString characterAtIndex:indx]];
+			
+			if( soundValue > 0 && soundValue != previousSoundValue )
+				[soundexStr appendString:[NSString stringWithFormat:@"%d", soundValue]];
+			
+			previousSoundValue = soundValue;
+			
+			// if we've got four characters, don't need to scan any more
+			
+			if([soundexStr length] >= 4)
+				break;
+		}
+		
+		// if < 4 characters, need to pad the string with zeroes
+		
+		while([soundexStr length] < 4)
+			[soundexStr appendString:@"0"];
+		
+		//NSLog(@"soundex for '%@' = %@", self, soundexStr );
+		
+		return soundexStr;
+	}
+	else
+		return @"";
+}
+
+
+- (BOOL)		soundsLikeString:(NSString*) aString
+{
+	return [[self soundexString] isEqualToString:[aString soundexString]];
 }
 @end

@@ -2,8 +2,9 @@ Purpose
 --------------
 
 Weather is a series of methods to simplify weather collection to a
-dictionary to single model.  Supporting various weather providers,
-an attempt is make to unify the results to a single standard.
+single model as dictionary.  Supporting various weather providers,
+an attempt is make to unify the results to a single standard.  See
+method +weatherBySimulation, for the details of the weather model.
 
 The caller passes in a dictionary containing a few args such as
 
@@ -15,9 +16,10 @@ The caller passes in a dictionary containing a few args such as
 	owmid		open weather map location id
 
 which are used in the formation of a weather URL which is read, parsed
-and returned as a dictionary.  The caller in addition to the location
-dictionary, passes in the provider type - see Weather public header for the
-dictionary model returned.
+and returned as a dictionary.  This is known as the "location" dictionary.
+From this, various provider routines will choose which argument are required.
+The caller in addition to the location dictionary, passes in the provider type;
+see Weather public header for the dictionary model returned.
 
 
 Setup
@@ -117,6 +119,9 @@ Weather makes use of the XMLDictionary Framework package found also on github:
     
 Release Notes
 ----------------
+Version 0.3
+
+- Added weather model and mapping from distinct providers; first pass at using a Soundex Package available at Github Gist: https://gist.github.com/darkseed/1261842, to map weather text strings across providers.
 
 Version 0.2
 
