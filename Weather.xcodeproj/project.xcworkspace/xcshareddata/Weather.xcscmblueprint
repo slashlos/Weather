@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "8C978D4EC68C597A7ACC8E320E890F7136B55C1E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "A7D8094F8FE2B7AAE481C56DA66BB02B35673F02" : 9223372036854775807,
+    "8FDCB8C6CFBA78E0E3667763514775D0D62067AD" : 9223372036854775807,
+    "A7B927C638033B725B7749AC2AF16C72A0DF71F3" : 9223372036854775807,
+    "8C978D4EC68C597A7ACC8E320E890F7136B55C1E" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "CE5C96E8-49CB-46D8-BC1D-AC3C8CE0A57B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "A7D8094F8FE2B7AAE481C56DA66BB02B35673F02" : "XMLDictionary-Framework\/",
+    "8FDCB8C6CFBA78E0E3667763514775D0D62067AD" : "XMLDictionary-Framework\/Configurations\/",
+    "A7B927C638033B725B7749AC2AF16C72A0DF71F3" : "XMLDictionary-Framework\/XMLDictionary\/",
+    "8C978D4EC68C597A7ACC8E320E890F7136B55C1E" : "Weather\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Weather",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Weather.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/slashlos\/Weather.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8C978D4EC68C597A7ACC8E320E890F7136B55C1E"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/danielctull\/Xcode-Configurations.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "8FDCB8C6CFBA78E0E3667763514775D0D62067AD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "git:\/\/github.com\/danielctull-forks\/XMLDictionary.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A7B927C638033B725B7749AC2AF16C72A0DF71F3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/danielctull-forks\/XMLDictionary-Framework.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A7D8094F8FE2B7AAE481C56DA66BB02B35673F02"
+    }
+  ]
+}
