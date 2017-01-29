@@ -235,7 +235,7 @@ NSUInteger getRankFromYahooCondCode( NSUInteger condCode )
 {
 	NSDictionary * ydl = [Weather ydlcodes];
 	NSNumber * code = @(condCode);
-	
+
 	return [ydl[code][wRank] integerValue];
 }
 
@@ -243,7 +243,7 @@ NSString * getTextFromYahooCondCode( NSUInteger condCode )
 {
 	NSDictionary * ydl = [Weather ydlcodes];
 	NSNumber * code = @(condCode);
-	
+
 	return ydl[code][wText];
 }
 
@@ -251,7 +251,7 @@ NSUInteger getRankFromOWMCondCode( NSUInteger condCode )
 {
 	NSDictionary * owm = [Weather owmcodes];
 	NSNumber * code = @(condCode);
-	
+
 	return [owm[code][wRank] integerValue];
 }
 
@@ -259,7 +259,7 @@ NSString * getTextFromOWMCondCode( NSUInteger condCode )
 {
 	NSDictionary * owm = [Weather owmcodes];
 	NSNumber * code = @(condCode);
-	
+
 	return owm[code][wText];
 }
 
@@ -288,7 +288,7 @@ NSDictionary * getModelForWeatherText( NSString * weather )
 		if ([ydl[key][wText] soundsLikeString:weather])
 		{
 			NSMutableDictionary * val = [[NSMutableDictionary alloc] initWithDictionary:ydl[key]];
-			
+
 			//	make value complete with its referencing key code and return
 			val[wCode] = key;
 			return val;
@@ -309,7 +309,7 @@ NSInteger RunAlertPanel(
 						NSString * othButton)
 {
 	NSView * contentView = [[NSApp keyWindow] contentView];
-	
+
 	//	Before starting the alert panel, ensure we're
 	//	not in full screen mode; exit first if we are
 	if ([contentView isInFullScreenMode])
@@ -318,13 +318,13 @@ NSInteger RunAlertPanel(
 	}
 #if (TARGET_OS_MAC && (MAC_OS_X_VERSION_MIN_REQUIRED > MAC_OS_X_VERSION_10_5))
 	NSAlert * alert = [[NSAlert alloc] init];
-	
+
 	[alert setMessageText:title];
 	[alert addButtonWithTitle:defButton];
 	[alert addButtonWithTitle:altButton];
 	[alert addButtonWithTitle:othButton];
 	[alert setInformativeText:format];
-	
+
 	return [alert runModal];
 #else
 	return NSRunAlertPanel(title,@"%@",defButton,altButton,othButton,format);
@@ -431,7 +431,7 @@ NSInteger RunAlertPanel(
 - (NSURL *)weatherURLBy:(WeatherProvider_t)provider
 {
 	NSString *urlString=nil, *address=nil;
-	
+
 	//	Formulate location based on track information availalble - by preference
 	//
 	//	owmid			id=open-weather-map-location[id]
@@ -773,7 +773,7 @@ NSInteger RunAlertPanel(
 					  dict[@"location"][@"country"]];
 	dict[@"ttl"] = @60;
 	dict[@"units"] = sims[@"units"];
-	
+
 	temp = [NSMutableDictionary dictionary];
 //	temp[@"chill"] - none
 	temp[@"direction"] = dict[@"wind"][@"direction"][@"_value"];
@@ -1112,7 +1112,7 @@ static NSArray* soundexCharSets = nil;
 	{
 		NSMutableArray* cs = [NSMutableArray array];
 		NSCharacterSet* charSet;
-		
+
 		charSet = [NSCharacterSet characterSetWithCharactersInString:@"aeiouhw"];
 		[cs addObject:charSet];
 		charSet = [NSCharacterSet characterSetWithCharactersInString:@"bfpv"];
@@ -1138,25 +1138,25 @@ static NSArray* soundexCharSets = nil;
 	NSRange				range;
 	NSMutableString*	newString = [NSMutableString string];
 	NSUInteger			len = [self length];
-	
+
 	mask &= ~NSBackwardsSearch;
 	range = NSMakeRange (0, len);
 	while (range.length)
 	{
 		NSRange substringRange;
 		NSUInteger pos = range.location;
-		
+
 		range = [self rangeOfCharacterFromSet:charSet options:mask range:range];
 		if (range.location == NSNotFound)
 			range = NSMakeRange (len, 0);
-		
+
 		substringRange = NSMakeRange (pos, range.location - pos);
 		[newString appendString:[self substringWithRange:substringRange]];
-		
+
 		range.location += range.length;
 		range.length = len - range.location;
 	}
-	
+
 	return newString;
 }
 
@@ -1170,18 +1170,18 @@ static NSArray* soundexCharSets = nil;
 - (unsigned)	soundexValueForCharacter:(unichar) aCharacter
 {
 	// returns the soundex mapping for the first character in the string. If the value returned is 0, the character should be discarded.
-	
+
 	unsigned		indx;
 	NSCharacterSet* cs;
-	
+
 	for( indx = 0; indx < [soundexCharSets count]; ++indx )
 	{
 		cs = [soundexCharSets objectAtIndex:indx];
-		
+
 		if([cs characterIsMember:aCharacter])
 			return indx;
 	}
-	
+
 	return 0;
 }
 
@@ -1203,46 +1203,46 @@ static NSArray* soundexCharSets = nil;
 	 Return the starting letter and the first three remaining digits. If needed, append zeroes to make it a letter and three digits.
 	 
 	 */
-	
+
 	[self initSoundex];
-	
+
 	if([self length] > 0)
 	{
 		NSMutableString* soundexStr = [NSMutableString string];
-		
+
 		// strip whitespace and convert to lower case
-		
+
 		NSString*	workingString = [[self lowercaseString] stringByRemovingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 		unsigned	indx, soundValue, previousSoundValue = 0;
-		
+
 		// include first character
-		
+
 		[soundexStr appendString:[workingString substringToIndex:1]];
-		
+
 		// convert up to 3 more significant characters
-		
+
 		for( indx = 1; indx < [workingString length]; ++indx )
 		{
 			soundValue = [self soundexValueForCharacter:[workingString characterAtIndex:indx]];
-			
+
 			if( soundValue > 0 && soundValue != previousSoundValue )
 				[soundexStr appendString:[NSString stringWithFormat:@"%d", soundValue]];
-			
+
 			previousSoundValue = soundValue;
-			
+
 			// if we've got four characters, don't need to scan any more
-			
+
 			if([soundexStr length] >= 4)
 				break;
 		}
-		
+
 		// if < 4 characters, need to pad the string with zeroes
-		
+
 		while([soundexStr length] < 4)
 			[soundexStr appendString:@"0"];
-		
+
 		//NSLog(@"soundex for '%@' = %@", self, soundexStr );
-		
+
 		return soundexStr;
 	}
 	else
