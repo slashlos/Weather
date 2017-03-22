@@ -184,13 +184,8 @@ OpenWeatherMapCondCodes[kOpenWeatherMapCondSize] =
 			NSString * text = [NSString stringWithFormat:@"%s",YahooCondCodes[wthr].text];
 			NSNumber * code = @(wthr);
 
-			ydl[wCode] = @{ wRank : @(YahooCondCodes[wthr].rank),
-							wText : text
-						  };
-
-			ydl[wText] = @{ wRank : @(YahooCondCodes[wthr].rank),
-							wCode : code
-						  };
+			ydl[code] = @{ wRank : @(YahooCondCodes[wthr].rank), wText : text };
+			ydl[text] = @{ wRank : @(YahooCondCodes[wthr].rank), wCode : code };
 		}
 
 		ydlcodes = ydl;
@@ -214,13 +209,8 @@ OpenWeatherMapCondCodes[kOpenWeatherMapCondSize] =
 			NSString * text = [NSString stringWithFormat:@"%s",OpenWeatherMapCondCodes[owmx].text];
 			NSNumber * rank = @(OpenWeatherMapCondCodes[owmx].rank);
 
-			owm[wCode] = @{ wRank : rank,
-							wText : text
-						 };
-
-			owm[wText] = @{ wRank : code,
-							wText : text
-						 };
+			owm[code] = @{ wRank : rank, wText : text };
+			owm[text] = @{ wRank : code, wText : text };
 		}
 
 		owmcodes = owm;
@@ -623,9 +613,9 @@ NSInteger RunAlertPanel(
 + (id)weatherByYahoo:(NSURL *)weatherURL
 {
 	NSString * weatherString = [NSString weatherStringWithContentsOfURL:weatherURL];
+	NSDictionary * json = nil, * yahoo = nil;
 	NSMutableDictionary * dict = nil;
 	NSError * jsonError = nil;
-	NSDictionary * json = nil;
 
 	//	Build our return weather dictionary or use a simulation
 	if (weatherString.length)
@@ -639,35 +629,37 @@ NSInteger RunAlertPanel(
 	else
 	if (weatherString)
 	{
-		[dict addEntriesFromDictionary:[NSDictionary weatherBySimulation]];
+		return [NSDictionary weatherBySimulation];
 	}
 
-	//	Something went wrong...
+	//	Something went wrong...return nil
 	if (![json count])
 	{
 		return nil;
 	}
 	else
+	if (!(yahoo = [json valueForKey:@"query"]))
 	{
-		dict = [[NSMutableDictionary alloc] init];
+		return nil;
+	}
+	else
+	if (!(yahoo = [yahoo valueForKey:@"results"]))
+	{
+		return nil;
+	}
+	else
+	if (!(yahoo = [yahoo valueForKey:@"channel"]) || (id)yahoo == [NSNull null])
+	{
+		return nil;
+	}
+	else
+	{
+		dict = [[NSMutableDictionary alloc] initWithDictionary:yahoo];
 	}
 
-	//	Now, marshall json dictionary into model
-	dict[@"astronomy"] = json[@"query"][@"results"][@"channel"][@"astronomy"];
-	dict[@"atmosphere"] = json[@"query"][@"results"][@"channel"][@"atmosphere"];
-	dict[@"description"] = json[@"query"][@"results"][@"channel"][@"description"];
-	dict[@"condition"] = json[@"query"][@"results"][@"channel"][@"item"][@"condition"];
-	dict[@"forecast"] = json[@"query"][@"results"][@"channel"][@"item"][@"forecast"][0];// first array entry
-	dict[@"image"] = json[@"query"][@"results"][@"channel"][@"image"];
-	dict[@"item"] = json[@"query"][@"results"][@"channel"][@"item"];
-	dict[@"language"] = json[@"query"][@"results"][@"channel"][@"language"];
-	dict[@"lastBuildDate"] = json[@"query"][@"results"][@"channel"][@"lastBuildDate"];
-	dict[@"link"] = json[@"query"][@"results"][@"channel"][@"link"];
-	dict[@"location"] = json[@"query"][@"results"][@"channel"][@"location"];
-	dict[@"title"] = json[@"query"][@"results"][@"channel"][@"title"];
-	dict[@"ttl"] = json[@"query"][@"results"][@"channel"][@"ttl"];
-	dict[@"units"] = json[@"query"][@"results"][@"channel"][@"units"];
-	dict[@"wind"] = json[@"query"][@"results"][@"channel"][@"wind"];
+	//	Now, map missing dictionary keys to match simulation model
+	dict[@"condition"] =		yahoo[@"item"][@"condition"];
+	dict[@"forecast"] =			yahoo[@"item"][@"forecast"][0];// first array entry
 
 	//	insert weather code to index rank mapping
 	dict[@"condition"][@"rank"] = @(getRankFromYahooCondCode([dict[@"condition"][@"code"] intValue]));
@@ -1084,17 +1076,14 @@ NSInteger RunAlertPanel(
 
 	//	If anything went wrong, simulate the weather
 	if (weather.count)
+	{
 		return weather;
+	}
 	else
 	{
-		if (weather)
-		{
-			NSLog(@"Error retrieving from provider (%d", provider);
-		}
+		NSLog(@"Error retrieving from provider (%d", provider);
 		return [NSDictionary weatherBySimulation];
 	}
-
-	return nil;
 }
 @end
 
