@@ -1051,20 +1051,24 @@ NSInteger RunAlertPanel(
 	//	woeid			w=where-on-earth-id[woeid]
 	//
 	NSURL * weatherURL = [self weatherURLBy:provider];
+	NSString * providerName = nil;
 	NSDictionary * weather = nil;
 
 	switch (provider)
 	{
 		case kWeatherByYahoo:
 			weather = [NSDictionary weatherByYahoo:weatherURL];
+			providerName = @"kWeatherByYahoo";
 			break;
 
 		case kWeatherByOpenWeatherMap:
 			weather = [NSDictionary weatherByOpenWeatherMap:weatherURL];
+			providerName = @"kWeatherByOpenWeatherMap";
 			break;
 
 		case kWeatherByWeatherUnderground:
 			weather = [NSDictionary weatherByWeatherUnderground:weatherURL];
+			providerName = @"kWeatherByWeatherUnderground";
 			break;
 
 		default:
@@ -1072,6 +1076,7 @@ NSInteger RunAlertPanel(
 
 		case kWeatherBySimulation:
 			weather = [NSDictionary weatherBySimulation];
+			providerName = @"kWeatherBySimulation";
 	}
 
 	//	If anything went wrong, simulate the weather
@@ -1081,7 +1086,7 @@ NSInteger RunAlertPanel(
 	}
 	else
 	{
-		NSLog(@"Error retrieving from provider (%d", provider);
+		NSLog(@"Error retrieving from provider (%d:%@)", provider, providerName);
 		return [NSDictionary weatherBySimulation];
 	}
 }
