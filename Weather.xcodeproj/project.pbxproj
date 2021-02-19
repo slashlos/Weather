@@ -3,14 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0F312D8E1DC00486004E0E73 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F312D8D1DC00486004E0E73 /* CoreLocation.framework */; };
-		0F312DD41DC019D9004E0E73 /* XMLDictionary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F399A521DBEA0CC00B2A342 /* XMLDictionary.framework */; };
-		0F312DD51DC01ABD004E0E73 /* XMLDictionary.framework in Resources */ = {isa = PBXBuildFile; fileRef = 0F399A521DBEA0CC00B2A342 /* XMLDictionary.framework */; };
 		0F399A421DBE9EF100B2A342 /* Weather.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FF5C7201DBB88FE005027C3 /* Weather.m */; };
+		0F8E1A6E25DF4765007D7D38 /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = 0F8E1A6D25DF4765007D7D38 /* FMDB */; };
 		0FF5C70E1DBB861A005027C3 /* Weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FF5C7041DBB8619005027C3 /* Weather.framework */; };
 		0FF5C7131DBB861A005027C3 /* WeatherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FF5C7121DBB861A005027C3 /* WeatherTests.m */; };
 		0FF5C7151DBB861A005027C3 /* Weather.h in Headers */ = {isa = PBXBuildFile; fileRef = 0FF5C7071DBB8619005027C3 /* Weather.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -20,34 +19,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0F312DCF1DC019CE004E0E73 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 24B495E11B56C8F5005EC321;
-			remoteInfo = "XMLDictionary OS X";
-		};
-		0F399A4F1DBEA0CC00B2A342 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 24B495C11B56C834005EC321;
-			remoteInfo = "XMLDictionary iOS";
-		};
-		0F399A511DBEA0CC00B2A342 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 24B495E21B56C8F5005EC321;
-			remoteInfo = "XMLDictionary OS X";
-		};
-		0F399A531DBEA0CC00B2A342 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 24ECDE651BC8FED800F0CB1E;
-			remoteInfo = "XMLDictionary tvOS";
-		};
 		0FF5C70F1DBB861A005027C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0FF5C6FB1DBB8619005027C3 /* Project object */;
@@ -59,7 +30,6 @@
 
 /* Begin PBXFileReference section */
 		0F312D8D1DC00486004E0E73 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
-		0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = XMLDictionary.xcodeproj; path = "../../GitHub/XMLDictionary-Framework/XMLDictionary.xcodeproj"; sourceTree = "<group>"; };
 		0F55814C1DC8F029004B5EC7 /* LICENCE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENCE.md; sourceTree = SOURCE_ROOT; };
 		0F55814D1DC8F029004B5EC7 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = SOURCE_ROOT; };
 		0FF5C7041DBB8619005027C3 /* Weather.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Weather.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,8 +48,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F312DD41DC019D9004E0E73 /* XMLDictionary.framework in Frameworks */,
 				0F312D8E1DC00486004E0E73 /* CoreLocation.framework in Frameworks */,
+				0F8E1A6E25DF4765007D7D38 /* FMDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,28 +72,9 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		0F399A481DBEA0BD00B2A342 /* SubProjects */ = {
-			isa = PBXGroup;
-			children = (
-				0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */,
-			);
-			name = SubProjects;
-			sourceTree = "<group>";
-		};
-		0F399A4A1DBEA0CC00B2A342 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				0F399A501DBEA0CC00B2A342 /* XMLDictionary.framework */,
-				0F399A521DBEA0CC00B2A342 /* XMLDictionary.framework */,
-				0F399A541DBEA0CC00B2A342 /* XMLDictionary.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		0FF5C6FA1DBB8619005027C3 = {
 			isa = PBXGroup;
 			children = (
-				0F399A481DBEA0BD00B2A342 /* SubProjects */,
 				0FF5C7061DBB8619005027C3 /* Weather */,
 				0FF5C7111DBB861A005027C3 /* WeatherTests */,
 				0FF5C7051DBB8619005027C3 /* Products */,
@@ -191,9 +142,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				0F312DD01DC019CE004E0E73 /* PBXTargetDependency */,
 			);
 			name = Weather;
+			packageProductDependencies = (
+				0F8E1A6D25DF4765007D7D38 /* FMDB */,
+			);
 			productName = Weather;
 			productReference = 0FF5C7041DBB8619005027C3 /* Weather.framework */;
 			productType = "com.apple.product-type.framework";
@@ -222,7 +175,7 @@
 		0FF5C6FB1DBB8619005027C3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Carlos D. Santiago";
 				TargetAttributes = {
 					0FF5C7031DBB8619005027C3 = {
@@ -245,14 +198,11 @@
 				Base,
 			);
 			mainGroup = 0FF5C6FA1DBB8619005027C3;
+			packageReferences = (
+				0F8E1A6C25DF4765007D7D38 /* XCRemoteSwiftPackageReference "fmdb" */,
+			);
 			productRefGroup = 0FF5C7051DBB8619005027C3 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 0F399A4A1DBEA0CC00B2A342 /* Products */;
-					ProjectRef = 0F399A491DBEA0CC00B2A342 /* XMLDictionary.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				0FF5C7031DBB8619005027C3 /* Weather */,
@@ -261,36 +211,11 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		0F399A501DBEA0CC00B2A342 /* XMLDictionary.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XMLDictionary.framework;
-			remoteRef = 0F399A4F1DBEA0CC00B2A342 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0F399A521DBEA0CC00B2A342 /* XMLDictionary.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XMLDictionary.framework;
-			remoteRef = 0F399A511DBEA0CC00B2A342 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		0F399A541DBEA0CC00B2A342 /* XMLDictionary.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = XMLDictionary.framework;
-			remoteRef = 0F399A531DBEA0CC00B2A342 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		0FF5C7021DBB8619005027C3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F312DD51DC01ABD004E0E73 /* XMLDictionary.framework in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,11 +249,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0F312DD01DC019CE004E0E73 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "XMLDictionary OS X";
-			targetProxy = 0F312DCF1DC019CE004E0E73 /* PBXContainerItemProxy */;
-		};
 		0FF5C7101DBB861A005027C3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 0FF5C7031DBB8619005027C3 /* Weather */;
@@ -362,6 +282,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -423,6 +344,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -469,7 +391,11 @@
 				);
 				INFOPLIST_FILE = Weather/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = me.slashlos.Weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -494,7 +420,11 @@
 				);
 				INFOPLIST_FILE = Weather/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_BUNDLE_IDENTIFIER = me.slashlos.Weather;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -508,7 +438,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J3VNR8UWPP;
 				INFOPLIST_FILE = WeatherTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.slashlos.WeatherTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -520,7 +454,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = J3VNR8UWPP;
 				INFOPLIST_FILE = WeatherTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = me.slashlos.WeatherTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -557,6 +495,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0F8E1A6C25DF4765007D7D38 /* XCRemoteSwiftPackageReference "fmdb" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ccgus/fmdb";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.7;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0F8E1A6D25DF4765007D7D38 /* FMDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0F8E1A6C25DF4765007D7D38 /* XCRemoteSwiftPackageReference "fmdb" */;
+			productName = FMDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0FF5C6FB1DBB8619005027C3 /* Project object */;
 }
