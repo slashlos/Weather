@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0F312D8E1DC00486004E0E73 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F312D8D1DC00486004E0E73 /* CoreLocation.framework */; };
 		0F399A421DBE9EF100B2A342 /* Weather.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FF5C7201DBB88FE005027C3 /* Weather.m */; };
-		0F8E1A6E25DF4765007D7D38 /* FMDB in Frameworks */ = {isa = PBXBuildFile; productRef = 0F8E1A6D25DF4765007D7D38 /* FMDB */; };
 		0FF5C70E1DBB861A005027C3 /* Weather.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FF5C7041DBB8619005027C3 /* Weather.framework */; };
 		0FF5C7131DBB861A005027C3 /* WeatherTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FF5C7121DBB861A005027C3 /* WeatherTests.m */; };
 		0FF5C7151DBB861A005027C3 /* Weather.h in Headers */ = {isa = PBXBuildFile; fileRef = 0FF5C7071DBB8619005027C3 /* Weather.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -134,7 +133,6 @@
 				A0269739918FD246C6241DC5 /* Pods-Weather-WeatherTests.debug.xcconfig */,
 				F12C66C95CD1575868695F76 /* Pods-Weather-WeatherTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -170,7 +168,6 @@
 			);
 			name = Weather;
 			packageProductDependencies = (
-				0F8E1A6D25DF4765007D7D38 /* FMDB */,
 			);
 			productName = Weather;
 			productReference = 0FF5C7041DBB8619005027C3 /* Weather.framework */;
@@ -388,6 +385,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -450,6 +448,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
