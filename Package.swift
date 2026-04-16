@@ -13,11 +13,7 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-<<<<<<< HEAD
-		.package(url: "https://github.com/slashlos/fmdb", from: "2.7.7"),
-=======
         .package(url: "https://github.com/slashlos/XMLDictionary", from: "1.4.1"),
->>>>>>> bb3810b (cocoapods install)
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -28,11 +24,7 @@ let package = Package(
 			path: "Weather",
 			publicHeadersPath: "."),
         .testTarget(
-<<<<<<< HEAD
-            name: "WeatherTests",
-=======
             name: "WeathersTests",
->>>>>>> bb3810b (cocoapods install)
             dependencies: ["Weather"]),
     ]
 )
